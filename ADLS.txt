@@ -1,0 +1,8 @@
+Resource Group : RGFALL2024
+tags: application DEMODAMG7370
+Storage account name : stgfall2024milindh
+Azure datafactory : adf-fall2024milindh
+Database : DAMG7370MILINDH
+Database server name: damg7370-milindh
+Database admin : damg7370admin
+Password: Password
