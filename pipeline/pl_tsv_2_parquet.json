@@ -263,12 +263,20 @@
 								}
 							},
 							{
+								"source": {
+									"name": "DI_Created_Date",
+									"type": "String"
+								},
 								"sink": {
 									"name": "DI_CREATED_DATE",
 									"type": "DateTime"
 								}
 							},
 							{
+								"source": {
+									"name": "DI_Job_ID",
+									"type": "String"
+								},
 								"sink": {
 									"name": "DI_JOB_ID",
 									"type": "String"
