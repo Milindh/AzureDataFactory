@@ -21,7 +21,15 @@
 					"description": "import data from ds_edw_load_location"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_edw_load_location",
+						"type": "DatasetReference"
+					},
+					"name": "sinkLocationDim"
+				}
+			],
 			"transformations": [
 				{
 					"name": "SourceDataWithSK",
@@ -29,10 +37,19 @@
 				},
 				{
 					"name": "aggregateLocationKeys",
-					"description": "Aggregating data by 'STATE, CITY, ZIP'"
+					"description": "Aggregating data by 'STATE, CITY, ZIP, MAXLOCATIONSK' producing columns"
+				},
+				{
+					"name": "surrogateKey"
+				},
+				{
+					"name": "derivedColumn"
 				}
 			],
 			"scriptLines": [
+				"parameters{",
+				"     DI_JOB_ID as string (\"56\")",
+				"}",
 				"source(output(",
 				"          state_fips as string,",
 				"          state as string,",
@@ -62,7 +79,41 @@
 				"     broadcast: 'auto')~> SourceDataWithSK",
 				"SourceDataWithSK aggregate(groupBy(city,",
 				"          state,",
-				"          zipcode)) ~> aggregateLocationKeys"
+				"          zipcode,",
+				"          MAXLOCATIONSK),",
+				"     COUNT_ROW = count(zipcode)) ~> aggregateLocationKeys",
+				"aggregateLocationKeys keyGenerate(output(RowNum as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey",
+				"surrogateKey derive(MAXLOCATIONSK = MAXLOCATIONSK + RowNum,",
+				"          DI_CREATED_DATE = toString(currentDate(), 'yyyy-MM-dd'),",
+				"          DI_JOB_ID = $DI_JOB_ID) ~> derivedColumn",
+				"derivedColumn sink(allowSchemaDrift: false,",
+				"     validateSchema: false,",
+				"     input(",
+				"          LOCATION_SK as string,",
+				"          ZIP as string,",
+				"          CITY as string,",
+				"          STATE as string,",
+				"          DATE_TO_WAREHOUSE as string,",
+				"          DI_JOBID as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          LOCATION_SK = MAXLOCATIONSK,",
+				"          ZIP = zipcode,",
+				"          CITY = city,",
+				"          STATE = state,",
+				"          DATE_TO_WAREHOUSE = DI_CREATED_DATE,",
+				"          DI_JOBID = DI_JOB_ID",
+				"     )) ~> sinkLocationDim"
 			]
 		}
 	}
