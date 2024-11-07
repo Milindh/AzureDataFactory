@@ -143,18 +143,11 @@
 				]
 			},
 			{
-				"name": "Parquet_2_Stg",
+				"name": "Parquet2StageTable",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy_2_Silver_As_Parquet",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
-					"timeout": "0.12:00:00",
+					"timeout": "0.01:00:00",
 					"retry": 0,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
@@ -166,16 +159,16 @@
 						"type": "ParquetSource",
 						"additionalColumns": [
 							{
-								"name": "DI_JOB_ID",
+								"name": "DI_Created_Date",
 								"value": {
-									"value": "@pipeline().parameters.JobID",
+									"value": "@utcNow()",
 									"type": "Expression"
 								}
 							},
 							{
-								"name": "DI_CREATED_DT",
+								"name": "DI_Job_ID",
 								"value": {
-									"value": "@utcNow()",
+									"value": "@pipeline().parameters.JobID",
 									"type": "Expression"
 								}
 							}
@@ -195,14 +188,7 @@
 							"type": "SnowflakeImportCopyCommand"
 						}
 					},
-					"enableStaging": true,
-					"stagingSettings": {
-						"linkedServiceName": {
-							"referenceName": "ls_stgblobdamg7370",
-							"type": "LinkedServiceReference"
-						},
-						"path": "snowflake-staging"
-					},
+					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
@@ -213,7 +199,7 @@
 								},
 								"sink": {
 									"name": "LICENSE_ISSUE_DATE",
-									"type": "DateTime"
+									"type": "String"
 								}
 							},
 							{
@@ -277,20 +263,12 @@
 								}
 							},
 							{
-								"source": {
-									"name": "DI_CREATED_DT",
-									"type": "String"
-								},
 								"sink": {
 									"name": "DI_CREATED_DATE",
 									"type": "DateTime"
 								}
 							},
 							{
-								"source": {
-									"name": "DI_JOB_ID",
-									"type": "String"
-								},
 								"sink": {
 									"name": "DI_JOB_ID",
 									"type": "String"
