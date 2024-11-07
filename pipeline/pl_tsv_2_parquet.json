@@ -145,7 +145,14 @@
 			{
 				"name": "Parquet2StageTable",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy_2_Silver_As_Parquet",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.01:00:00",
 					"retry": 0,
@@ -188,7 +195,14 @@
 							"type": "SnowflakeImportCopyCommand"
 						}
 					},
-					"enableStaging": false,
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "ls_stgblobdamg7370",
+							"type": "LinkedServiceReference"
+						},
+						"path": "snowflake-staging"
+					},
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
