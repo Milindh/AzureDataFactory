@@ -6,10 +6,10 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "ds_read_loaction_parquet",
+						"referenceName": "StagelocationFromParquet",
 						"type": "DatasetReference"
 					},
-					"name": "sourceParquet",
+					"name": "sourceStageLocation",
 					"description": "Import data from Location Parquet"
 				},
 				{
@@ -51,20 +51,14 @@
 				"     DI_JOB_ID as string (\"56\")",
 				"}",
 				"source(output(",
-				"          state_fips as string,",
-				"          state as string,",
-				"          state_abbr as string,",
-				"          zipcode as string,",
-				"          county as string,",
-				"          city as string,",
-				"          DI_Date_to_warehouse as string,",
+				"          ZIP_CODE as string,",
+				"          DI_CREATED_DATE as string,",
 				"          DI_JOB_ID as string",
 				"     ),",
 				"     allowSchemaDrift: false,",
 				"     validateSchema: false,",
 				"     limit: 100,",
-				"     ignoreNoFilesFound: false,",
-				"     format: 'parquet') ~> sourceParquet",
+				"     format: 'table') ~> sourceStageLocation",
 				"source(output(",
 				"          MAXLOCATIONSK as decimal(10,0)",
 				"     ),",
@@ -72,7 +66,7 @@
 				"     validateSchema: false,",
 				"     query: 'SELECT NVL(MAX(LOCATION_SK), 0) as MaxLocationSK FROM EDW.LOCATION_DIM',",
 				"     format: 'query') ~> sourceLocationDim",
-				"sourceParquet, sourceLocationDim join(1==1,",
+				"sourceStageLocation, sourceLocationDim join(1==1,",
 				"     joinType:'cross',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
