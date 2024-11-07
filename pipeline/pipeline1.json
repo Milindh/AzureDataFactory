@@ -43,9 +43,12 @@
 						}
 					},
 					"sink": {
-						"type": "SnowflakeV2Sink",
-						"importSettings": {
-							"type": "SnowflakeImportCopyCommand"
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
 						}
 					},
 					"enableStaging": false,
@@ -53,54 +56,105 @@
 						"type": "TabularTranslator",
 						"mappings": [
 							{
-								"sink": {
-									"name": "LOCATION_SK",
-									"type": "Int64"
-								}
-							},
-							{
 								"source": {
-									"name": "zipcode",
-									"type": "String"
+									"name": "state_fips",
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
-									"name": "ZIP",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "city",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CITY",
-									"type": "String"
+									"name": "state_fips",
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "state",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "state",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "state_abbr",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "state_abbr",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "zipcode",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "zipcode",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "county",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "county",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "city",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "city",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "DI_Date_to_warehouse",
 									"type": "String"
 								},
 								"sink": {
-									"name": "STATE",
-									"type": "String"
+									"name": "DI_Date_to_warehouse",
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
-								"sink": {
-									"name": "DATE_TO_WAREHOUSE",
-									"type": "DateTime"
-								}
-							},
-							{
-								"sink": {
-									"name": "DI_JOBID",
+								"source": {
+									"name": "DI_JOB_ID",
 									"type": "String"
+								},
+								"sink": {
+									"name": "DI_JOB_ID",
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							}
-						]
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
 					}
 				},
 				"inputs": [
@@ -111,7 +165,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "LocationDim",
+						"referenceName": "Location_Dim_parquet",
 						"type": "DatasetReference"
 					}
 				]
