@@ -6,44 +6,28 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "StagelocationFromParquet",
-						"type": "DatasetReference"
-					},
-					"name": "sourceStageLocation",
-					"description": "Import data from Location Parquet"
-				},
-				{
-					"dataset": {
 						"referenceName": "ds_edw_load_location",
 						"type": "DatasetReference"
 					},
 					"name": "sourceLocationDim",
 					"description": "import data from ds_edw_load_location"
-				}
-			],
-			"sinks": [
+				},
 				{
 					"dataset": {
-						"referenceName": "ds_edw_load_location",
+						"referenceName": "StagelocationFromParquet",
 						"type": "DatasetReference"
 					},
-					"name": "sinkLocationDim"
+					"name": "sourceStageLocation"
 				}
 			],
+			"sinks": [],
 			"transformations": [
 				{
-					"name": "SourceDataWithSK",
-					"description": "Custom (cross) join on sourceParquet and 'sourceBreedDim'"
+					"name": "joinLocationDimandStage"
 				},
 				{
-					"name": "aggregateLocationKeys",
-					"description": "Aggregating data by 'STATE, CITY, ZIP, MAXLOCATIONSK' producing columns"
-				},
-				{
-					"name": "surrogateKey"
-				},
-				{
-					"name": "derivedColumn"
+					"name": "aggregateBreedKeys",
+					"description": "Adding newkey rowNum "
 				}
 			],
 			"scriptLines": [
@@ -51,63 +35,29 @@
 				"     DI_JOB_ID as string (\"56\")",
 				"}",
 				"source(output(",
-				"          ZIP_CODE as string,",
-				"          DI_CREATED_DATE as string,",
-				"          DI_JOB_ID as string",
-				"     ),",
-				"     allowSchemaDrift: false,",
-				"     validateSchema: false,",
-				"     limit: 100,",
-				"     format: 'table') ~> sourceStageLocation",
-				"source(output(",
 				"          MAXLOCATIONSK as decimal(10,0)",
 				"     ),",
 				"     allowSchemaDrift: false,",
 				"     validateSchema: false,",
 				"     query: 'SELECT NVL(MAX(LOCATION_SK), 0) as MaxLocationSK FROM EDW.LOCATION_DIM',",
 				"     format: 'query') ~> sourceLocationDim",
+				"source(output(",
+				"          ZIP_CODE as string,",
+				"          DI_CREATED_DATE as string,",
+				"          DI_JOB_ID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> sourceStageLocation",
 				"sourceStageLocation, sourceLocationDim join(1==1,",
 				"     joinType:'cross',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> SourceDataWithSK",
-				"SourceDataWithSK aggregate(groupBy(city,",
-				"          state,",
-				"          zipcode,",
-				"          MAXLOCATIONSK),",
-				"     COUNT_ROW = count(zipcode)) ~> aggregateLocationKeys",
-				"aggregateLocationKeys keyGenerate(output(RowNum as long),",
-				"     startAt: 1L,",
-				"     stepValue: 1L) ~> surrogateKey",
-				"surrogateKey derive(MAXLOCATIONSK = MAXLOCATIONSK + RowNum,",
-				"          DI_CREATED_DATE = toString(currentDate(), 'yyyy-MM-dd'),",
-				"          DI_JOB_ID = $DI_JOB_ID) ~> derivedColumn",
-				"derivedColumn sink(allowSchemaDrift: false,",
-				"     validateSchema: false,",
-				"     input(",
-				"          LOCATION_SK as string,",
-				"          ZIP as string,",
-				"          CITY as string,",
-				"          STATE as string,",
-				"          DATE_TO_WAREHOUSE as string,",
-				"          DI_JOBID as string",
-				"     ),",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     stageInsert: true,",
-				"     mapColumn(",
-				"          LOCATION_SK = MAXLOCATIONSK,",
-				"          ZIP = zipcode,",
-				"          CITY = city,",
-				"          STATE = state,",
-				"          DATE_TO_WAREHOUSE = DI_CREATED_DATE,",
-				"          DI_JOBID = DI_JOB_ID",
-				"     )) ~> sinkLocationDim"
+				"     broadcast: 'auto')~> joinLocationDimandStage",
+				"joinLocationDimandStage aggregate(groupBy(ZIP_CODE,",
+				"          MAXLOCATIONSK,",
+				"          {} = ERROR_FUNCTION('')),",
+				"     COUNT_ROW = count(Zipcode)) ~> aggregateBreedKeys"
 			]
 		}
 	}
