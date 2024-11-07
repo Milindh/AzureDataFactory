@@ -88,7 +88,7 @@
 				"surrogateKey derive(BREED_SK = MAXBREEDSK + RowNum,",
 				"          DI_CREATED_DT = toString(currentDate(), 'yyyy-MM-dd'),",
 				"          DI_JOB_ID = $DI_JOB_ID) ~> DerivedColumns",
-				"DerivedColumns sink(allowSchemaDrift: false,",
+				"DerivedColumns sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          BREED_SK as string,",
