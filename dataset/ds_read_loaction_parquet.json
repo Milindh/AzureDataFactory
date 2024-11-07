@@ -1,0 +1,53 @@
+{
+	"name": "ds_read_loaction_parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_stgfall2024milindh",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "geo-data.parquet",
+				"fileSystem": "silver"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "state_fips",
+				"type": "UTF8"
+			},
+			{
+				"name": "state",
+				"type": "UTF8"
+			},
+			{
+				"name": "state_abbr",
+				"type": "UTF8"
+			},
+			{
+				"name": "zipcode",
+				"type": "UTF8"
+			},
+			{
+				"name": "county",
+				"type": "UTF8"
+			},
+			{
+				"name": "city",
+				"type": "UTF8"
+			},
+			{
+				"name": "DI_Date_to_warehouse",
+				"type": "UTF8"
+			},
+			{
+				"name": "DI_JOB_ID",
+				"type": "UTF8"
+			}
+		]
+	}
+}
