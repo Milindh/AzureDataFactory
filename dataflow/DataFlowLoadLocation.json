@@ -3,61 +3,13 @@
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [
-				{
-					"dataset": {
-						"referenceName": "ds_edw_load_location",
-						"type": "DatasetReference"
-					},
-					"name": "sourceLocationDim",
-					"description": "import data from ds_edw_load_location"
-				},
-				{
-					"dataset": {
-						"referenceName": "StagelocationFromParquet",
-						"type": "DatasetReference"
-					},
-					"name": "sourceStageLocation"
-				}
-			],
+			"sources": [],
 			"sinks": [],
-			"transformations": [
-				{
-					"name": "joinLocationDimandStage"
-				},
-				{
-					"name": "aggregateBreedKeys",
-					"description": "Adding newkey rowNum "
-				}
-			],
+			"transformations": [],
 			"scriptLines": [
 				"parameters{",
 				"     DI_JOB_ID as string (\"56\")",
-				"}",
-				"source(output(",
-				"          MAXLOCATIONSK as decimal(10,0)",
-				"     ),",
-				"     allowSchemaDrift: false,",
-				"     validateSchema: false,",
-				"     query: 'SELECT NVL(MAX(LOCATION_SK), 0) as MaxLocationSK FROM EDW.LOCATION_DIM',",
-				"     format: 'query') ~> sourceLocationDim",
-				"source(output(",
-				"          ZIP_CODE as string,",
-				"          DI_CREATED_DATE as string,",
-				"          DI_JOB_ID as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     format: 'table') ~> sourceStageLocation",
-				"sourceStageLocation, sourceLocationDim join(1==1,",
-				"     joinType:'cross',",
-				"     matchType:'exact',",
-				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> joinLocationDimandStage",
-				"joinLocationDimandStage aggregate(groupBy(ZIP_CODE,",
-				"          MAXLOCATIONSK,",
-				"          {} = ERROR_FUNCTION('')),",
-				"     COUNT_ROW = count(Zipcode)) ~> aggregateBreedKeys"
+				"}"
 			]
 		}
 	}
