@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-fall2024milindh"
+		},
+		"ls_Snowflake_password": {
+			"value": ""
+		},
+		"ls_Snowflake_properties_typeProperties_database": {
+			"value": "AZURE_TEST_DB"
+		},
+		"ls_stgblobdamg7370_sasUri": {
+			"value": ""
+		},
+		"ls_stgfall2024milindh_properties_typeProperties_url": {
+			"value": "https://stgfall2024milindh.dfs.core.windows.net/"
+		}
+	}
+}
