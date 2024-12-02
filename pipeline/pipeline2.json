@@ -1,5 +1,5 @@
 {
-	"name": "pipelineDynamic",
+	"name": "pipeline2",
 	"properties": {
 		"activities": [
 			{
@@ -28,8 +28,14 @@
 						"referenceName": "ds_Azure_SQL",
 						"type": "DatasetReference",
 						"parameters": {
-							"schema_name": "SalesLT",
-							"table_name": "Customer"
+							"schema_name": {
+								"value": "@pipeline().parameters.sname",
+								"type": "Expression"
+							},
+							"table_name": {
+								"value": "@pipeline().parameters.tname",
+								"type": "Expression"
+							}
 						}
 					},
 					"firstRowOnly": false
@@ -38,10 +44,12 @@
 		],
 		"parameters": {
 			"sname": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "SalesLT"
 			},
 			"tname": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "Customer"
 			}
 		},
 		"variables": {
