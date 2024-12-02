@@ -29,7 +29,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"schema_name": {
-								"value": "SalesLT\n",
+								"value": "@pipeline().parameters.sname",
 								"type": "Expression"
 							},
 							"table_name": {
@@ -78,7 +78,7 @@
 							}
 						},
 						{
-							"name": "Load2Parquet",
+							"name": "Sourrce2Parquet",
 							"type": "Copy",
 							"dependsOn": [
 								{
@@ -89,8 +89,8 @@
 								}
 							],
 							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
+								"timeout": "0.00:30:00",
+								"retry": 2,
 								"retryIntervalInSeconds": 30,
 								"secureOutput": false,
 								"secureInput": false
@@ -126,6 +126,10 @@
 									"referenceName": "ds_Azure_SQL",
 									"type": "DatasetReference",
 									"parameters": {
+										"schema_name": {
+											"value": "@item().schema_id",
+											"type": "Expression"
+										},
 										"table_name": {
 											"value": "@item().table_name",
 											"type": "Expression"
