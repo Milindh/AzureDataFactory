@@ -10,7 +10,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "dynamic_parquet",
+				"fileName": {
+					"value": "Dynamic_Parquet",
+					"type": "Expression"
+				},
 				"fileSystem": "silver"
 			},
 			"compressionCodec": "snappy"
