@@ -7,24 +7,7 @@
 		},
 		"annotations": [],
 		"type": "SnowflakeV2Table",
-		"schema": [
-			{
-				"name": "SOURCETABLENAME",
-				"type": "VARCHAR"
-			},
-			{
-				"name": "COLUMNNAME",
-				"type": "VARCHAR"
-			},
-			{
-				"name": "COLUMNVALUE",
-				"type": "VARCHAR"
-			},
-			{
-				"name": "LOADDATE",
-				"type": "TIMESTAMP_NTZ"
-			}
-		],
+		"schema": [],
 		"typeProperties": {
 			"schema": "PIPELINE_SCHEMA",
 			"table": "UNIFIEDSTAGINGTABLE"
