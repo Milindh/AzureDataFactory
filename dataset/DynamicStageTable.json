@@ -1,0 +1,33 @@
+{
+	"name": "DynamicStageTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_snowflake_dynamic",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "SOURCETABLENAME",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "COLUMNNAME",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "COLUMNVALUE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "LOADDATE",
+				"type": "TIMESTAMP_NTZ"
+			}
+		],
+		"typeProperties": {
+			"schema": "PIPELINE_SCHEMA",
+			"table": "UNIFIEDSTAGINGTABLE"
+		}
+	}
+}
