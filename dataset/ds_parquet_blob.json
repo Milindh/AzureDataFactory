@@ -1,0 +1,19 @@
+{
+	"name": "ds_parquet_blob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blobDatastore",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "dynamic-staging"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
