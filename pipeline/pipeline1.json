@@ -170,11 +170,7 @@
 								"sink": {
 									"type": "SnowflakeV2Sink",
 									"importSettings": {
-										"type": "SnowflakeImportCopyCommand",
-										"storageIntegration": {
-											"value": "@concat(item().schema_name, '.', item().table_name)",
-											"type": "Expression"
-										}
+										"type": "SnowflakeImportCopyCommand"
 									}
 								},
 								"enableStaging": true,
