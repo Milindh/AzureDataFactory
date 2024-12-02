@@ -18,7 +18,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select name as table_name, schema_id as schema_name\nfrom sys.tables\nwhere type = 'U' and schema_id =5;",
+							"value": "SELECT \n    t.name AS table_name, \n    SCHEMA_NAME(t.schema_id) AS schema_name\nFROM sys.tables t\nWHERE t.type = 'U' \n  AND SCHEMA_NAME(t.schema_id) = 'SalesLT';\n",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -29,11 +29,11 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"schema_name": {
-								"value": "@pipeline().parameters.sname",
+								"value": "SalesLT",
 								"type": "Expression"
 							},
 							"table_name": {
-								"value": "@pipeline().parameters.tname",
+								"value": "Customer",
 								"type": "Expression"
 							}
 						}
